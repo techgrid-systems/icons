@@ -218,7 +218,8 @@
             }
 
             galleryList.innerHTML = filtered.map((asset) => {
-                const imgUrl = BASE_URL + asset.filename;
+                // FIXED: Added '/' between BASE_URL and asset.filename
+                const imgUrl = `${BASE_URL}/${asset.filename}`;
                 return `
                 <div class="list-row p-4 sm:px-6 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center justify-between cursor-pointer"
                      onclick="openLightbox('${imgUrl}', '${asset.name}')">
