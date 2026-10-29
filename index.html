@@ -46,30 +46,45 @@
             transition: filter 0.2s ease;
         }
 
-        /* Anti-Screenshot Page Obfuscation / Blur Trigger */
-        body.screen-protected {
-            filter: blur(25px) brightness(0.3);
-            pointer-events: none;
-            user-select: none;
+        /* Image blurring on screenshot attempt */
+        .image-container img {
+            transition: filter 0.2s ease, opacity 0.2s ease;
         }
 
-        #privacy-shield {
-            position: fixed;
+        body.screenshot-detected .image-container img,
+        body.screenshot-detected #lightbox-img {
+            filter: blur(40px) grayscale(100%) !important;
+            opacity: 0.1 !important;
+        }
+
+        /* Overlay indicator on screenshot attempt */
+        .image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screenshot-warning-overlay {
+            position: absolute;
             inset: 0;
             background: rgba(18, 18, 18, 0.95);
-            z-index: 9999;
             display: flex;
+            flex-col: column;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            color: #00F0FF;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease;
+            z-index: 10;
         }
 
-        body.screen-protected #privacy-shield {
+        body.screenshot-detected .screenshot-warning-overlay {
             opacity: 1;
-            pointer-events: auto;
         }
 
         .list-row {
@@ -97,13 +112,6 @@
     </style>
 </head>
 <body class="min-h-screen bg-[#121212] flex flex-col justify-between select-none">
-
-    <!-- Privacy Shield Overlay for Screen Capture Mitigation -->
-    <div id="privacy-shield">
-        <i class="fa-solid fa-shield-halved text-cyan-400 text-5xl mb-4 animate-pulse"></i>
-        <h2 class="text-white font-tech text-xl font-bold tracking-wider">PROTECTED ASSET CONTENT</h2>
-        <p class="text-slate-400 text-xs font-mono mt-2">Screen capture or window focus change detected. Content secured.</p>
-    </div>
 
     <div>
         <!-- Top Navigation Bar (Fortinet Style) -->
@@ -184,11 +192,15 @@
     <!-- Lightbox Modal -->
     <div id="lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all">
         <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close Preview"
-                class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800/80 p-3 rounded-full hover:bg-slate-700 transition">
+                class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800/80 p-3 rounded-full hover:bg-slate-700 transition z-20">
             <i class="fa-solid fa-xmark text-xl w-6 h-6 flex items-center justify-center"></i>
         </button>
         <div class="max-w-4xl max-h-[85vh] flex flex-col items-center">
-            <div class="relative p-4 rounded-2xl bg-[#1A1A1A] border border-cyan-500/30 shadow-2xl mb-4 overflow-hidden">
+            <div class="relative p-4 rounded-2xl bg-[#1A1A1A] border border-cyan-500/30 shadow-2xl mb-4 overflow-hidden image-container">
+                <div class="screenshot-warning-overlay">
+                    <i class="fa-solid fa-shield-halved text-2xl mb-1 text-cyan-400"></i>
+                    <span>Protected Image</span>
+                </div>
                 <img id="lightbox-img" src="" alt="Full Preview" draggable="false" class="max-h-[65vh] object-contain rounded-lg">
             </div>
             <div class="text-center">
@@ -258,7 +270,10 @@
                      onclick="openLightbox('${imgUrl}', '${asset.name}')">
                     
                     <div class="col-span-6 flex items-center gap-4 w-full">
-                        <div class="w-12 h-12 rounded-lg bg-[#0F172A] border border-slate-700 p-2 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-lg bg-[#0F172A] border border-slate-700 p-2 flex items-center justify-center shrink-0 image-container">
+                            <div class="screenshot-warning-overlay">
+                                <i class="fa-solid fa-lock text-xs"></i>
+                            </div>
                             <img src="${imgUrl}" 
                                  alt="${asset.name}" 
                                  draggable="false"
@@ -314,27 +329,44 @@
             if (e.target.id === 'lightbox') closeLightbox();
         });
 
-        // --- Screen Capture Protection Mechanisms ---
+        // --- Targeted PrintScreen / Screenshot Image Blurring ---
         
-        // 1. Blur out page when window loses focus (e.g., user clicks Snipping Tool or shifts window)
+        function triggerImageBlur() {
+            // Add protection class to trigger blur on all image tags
+            document.body.classList.add('screenshot-detected');
+            
+            // Clear clipboard if possible
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('');
+            }
+
+            // Restore images after 3.5 seconds
+            setTimeout(() => {
+                document.body.classList.remove('screenshot-detected');
+            }, 3500);
+        }
+
+        // Listen for PrintScreen key and screenshot shortcuts
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen' || e.code === 'PrintScreen') {
+                triggerImageBlur();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            // Windows Snipping Tool / Mac Screenshot Hotkeys (Win+Shift+S, Cmd+Shift+3, Cmd+Shift+4)
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 's' || e.key === 'S' || e.key === '3' || e.key === '4')) {
+                triggerImageBlur();
+            }
+        });
+
+        // Also trigger blur when browser window loses focus (e.g. Snipping tool opening)
         window.addEventListener('blur', () => {
-            document.body.classList.add('screen-protected');
+            document.body.classList.add('screenshot-detected');
         });
 
         window.addEventListener('focus', () => {
-            document.body.classList.remove('screen-protected');
-        });
-
-        // 2. Detect Print Screen Key Attempts
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText(''); // Clear clipboard attempt
-                document.body.classList.add('screen-protected');
-                alert('Screenshots are disabled on this protected asset portal.');
-                setTimeout(() => {
-                    document.body.classList.remove('screen-protected');
-                }, 3000);
-            }
+            document.body.classList.remove('screenshot-detected');
         });
 
         // Anti-save / Protection Event Listeners
