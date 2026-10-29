@@ -43,6 +43,33 @@
             background-color: #121212;
             color: #E2E8F0;
             font-family: 'Inter', sans-serif;
+            transition: filter 0.2s ease;
+        }
+
+        /* Anti-Screenshot Page Obfuscation / Blur Trigger */
+        body.screen-protected {
+            filter: blur(25px) brightness(0.3);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #privacy-shield {
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 18, 18, 0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        body.screen-protected #privacy-shield {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .list-row {
@@ -70,6 +97,13 @@
     </style>
 </head>
 <body class="min-h-screen bg-[#121212] flex flex-col justify-between select-none">
+
+    <!-- Privacy Shield Overlay for Screen Capture Mitigation -->
+    <div id="privacy-shield">
+        <i class="fa-solid fa-shield-halved text-cyan-400 text-5xl mb-4 animate-pulse"></i>
+        <h2 class="text-white font-tech text-xl font-bold tracking-wider">PROTECTED ASSET CONTENT</h2>
+        <p class="text-slate-400 text-xs font-mono mt-2">Screen capture or window focus change detected. Content secured.</p>
+    </div>
 
     <div>
         <!-- Top Navigation Bar (Fortinet Style) -->
@@ -218,7 +252,6 @@
             }
 
             galleryList.innerHTML = filtered.map((asset) => {
-                // FIXED: Added '/' between BASE_URL and asset.filename
                 const imgUrl = `${BASE_URL}/${asset.filename}`;
                 return `
                 <div class="list-row p-4 sm:px-6 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center justify-between cursor-pointer"
@@ -279,6 +312,29 @@
 
         document.getElementById('lightbox').addEventListener('click', (e) => {
             if (e.target.id === 'lightbox') closeLightbox();
+        });
+
+        // --- Screen Capture Protection Mechanisms ---
+        
+        // 1. Blur out page when window loses focus (e.g., user clicks Snipping Tool or shifts window)
+        window.addEventListener('blur', () => {
+            document.body.classList.add('screen-protected');
+        });
+
+        window.addEventListener('focus', () => {
+            document.body.classList.remove('screen-protected');
+        });
+
+        // 2. Detect Print Screen Key Attempts
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText(''); // Clear clipboard attempt
+                document.body.classList.add('screen-protected');
+                alert('Screenshots are disabled on this protected asset portal.');
+                setTimeout(() => {
+                    document.body.classList.remove('screen-protected');
+                }, 3000);
+            }
         });
 
         // Anti-save / Protection Event Listeners
