@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techgrid Systems — Brand Identity & Asset Gallery</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Orbitron -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#070A12',
+                            card: '#0D1424',
+                            border: '#1E293B',
+                            accent: '#00F0FF',
+                            glow: '#0088FF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070A12;
+            color: #F1F5F9;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(0, 136, 255, 0.06) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        /* Tech Background Grid Pattern */
+        .bg-grid-pattern {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(13, 20, 36, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px -10px rgba(0, 240, 255, 0.25);
+        }
+
+        /* Glow Text Effect */
+        .text-glow {
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Smooth Lightbox Transition */
+        #lightbox {
+            transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-grid-pattern relative flex flex-col justify-between">
+
+    <!-- Top Ambient Glow Line -->
+    <div class="h-1 w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-500 shadow-[0_0_15px_rgba(0,240,255,0.8)]"></div>
+
+    <!-- Header Section -->
+    <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 w-full">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase mb-3">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    Official Asset Library
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-extrabold font-tech tracking-tight text-white">
+                    TECHGRID <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 text-glow">SYSTEMS</span>
+                </h1>
+                <p class="mt-2 text-slate-400 text-sm sm:text-base max-w-xl">
+                    High-resolution brand identity icons, modular sub-service logos, and visual assets repository.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="https://github.com/techgrid-systems/techgrid-systems-logos" target="_blank" rel="noopener" 
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-cyan-500/50 text-sm font-medium transition-all shadow-lg hover:text-white">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    <span>GitHub Repo</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Gallery Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        
+        <!-- Filter / Stats Info Bar -->
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-lg font-semibold text-slate-300 flex items-center gap-2">
+                <i class="fa-solid fa-shapes text-cyan-400"></i>
+                Brand Logos (<span id="asset-count">7</span>)
+            </h2>
+            <div class="text-xs text-slate-500">
+                Click any image to view full resolution
+            </div>
+        </div>
+
+        <!-- Dynamic Logo Grid -->
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards rendered via JS -->
+        </div>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all">
+        <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close Preview"
+                class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800/80 p-3 rounded-full hover:bg-slate-700 transition">
+            <i class="fa-solid fa-xmark text-xl w-6 h-6 flex items-center justify-center"></i>
+        </button>
+        <div class="max-w-4xl max-h-[85vh] flex flex-col items-center">
+            <div class="relative p-2 rounded-2xl bg-slate-900/80 border border-cyan-500/30 shadow-2xl mb-4 overflow-hidden">
+                <img id="lightbox-img" src="" alt="Full Preview" class="max-h-[65vh] object-contain rounded-lg">
+            </div>
+            <div class="text-center">
+                <h3 id="lightbox-title" class="text-xl font-bold font-tech text-white"></h3>
+                <p id="lightbox-filename" class="text-sm font-mono text-cyan-400 mt-1"></p>
+                <div class="mt-4 flex gap-3 justify-center">
+                    <a id="lightbox-download" href="" download 
+                       class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Download Asset
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 mt-16 bg-slate-950/40 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <p>&copy; 2026 Techgrid Systems. All brand rights reserved.</p>
+            <p class="flex items-center gap-2">
+                <span>Hosted on GitHub Pages</span>
+                <span>•</span>
+                <a href="https://github.com/techgrid-systems" target="_blank" class="hover:text-cyan-400 transition">Techgrid Organization</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script to render assets and handle lightbox -->
+    <script>
+        // List of all 7 repository assets
+        const assets = [
+            { name: "Techgrid Primary", filename: "tgs-primary.png", type: "PNG Logo" },
+            { name: "Techgrid Cloud", filename: "tgs-cloud.png", type: "PNG Icon" },
+            { name: "Techgrid Guard", filename: "tgs-guard.png", type: "PNG Icon" },
+            { name: "Techgrid Sandbox", filename: "tgs-sandbox.png", type: "PNG Icon" },
+            { name: "Techgrid SIEM", filename: "tgs-siem.png", type: "PNG Icon" },
+            { name: "Techgrid Training", filename: "tgs-training.jpeg", type: "JPEG Image" },
+            { name: "Techgrid Main", filename: "tgs.jpg", type: "JPG Logo" }
+        ];
+
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        // Fallback placeholder function in case local file hasn't rendered yet
+        function handleImageError(imgElement, title) {
+            imgElement.onerror = null; // Prevent infinite loop
+            imgElement.src = `https://placehold.co/600x400/0d1424/00f0ff?text=${encodeURIComponent(title)}`;
+        }
+
+        // Populate Gallery Cards
+        function renderGallery() {
+            galleryGrid.innerHTML = assets.map((asset, index) => `
+                <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                    <!-- Image Preview Area -->
+                    <div class="relative aspect-video bg-slate-950/60 p-4 flex items-center justify-center cursor-pointer overflow-hidden border-b border-slate-800/60"
+                         onclick="openLightbox('${asset.filename}', '${asset.name}')">
+                        <img src="./${asset.filename}" 
+                             alt="${asset.name}" 
+                             onerror="handleImageError(this, '${asset.name}')"
+                             class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-cyan-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900/90 text-cyan-400 text-xs font-semibold border border-cyan-500/40 shadow-lg">
+                                <i class="fa-solid fa-expand mr-1"></i> Preview
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card Body / Details -->
+                    <div class="p-5 flex flex-col justify-between flex-grow">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-cyan-400 font-mono mb-1">
+                                <span>${asset.type}</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white font-tech group-hover:text-cyan-300 transition-colors">
+                                ${asset.name}
+                            </h3>
+                            <p class="text-xs text-slate-400 font-mono mt-1 truncate">
+                                ${asset.filename}
+                            </p>
+                        </div>
+
+                        <!-- Card Actions -->
+                        <div class="mt-5 pt-3 border-t border-slate-800/80 flex items-center gap-2">
+                            <button onclick="openLightbox('./${asset.filename}', '${asset.name}', '${asset.filename}')" 
+                                    class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-eye text-cyan-400"></i> View
+                            </button>
+                            <a href="./${asset.filename}" download="${asset.filename}" 
+                               class="flex-1 py-2 px-3 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-medium transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-download"></i> Save
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Lightbox Functions
+        function openLightbox(src, title, filename = '') {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxFilename = document.getElementById('lightbox-filename');
+            const lightboxDownload = document.getElementById('lightbox-download');
+
+            lightboxImg.src = src;
+            lightboxImg.onerror = function() {
+                handleImageError(this, title);
+            };
+            lightboxTitle.innerText = title;
+            lightboxFilename.innerText = filename || src.split('/').pop();
+            lightboxDownload.href = src;
+            lightboxDownload.setAttribute('download', filename || src.split('/').pop());
+
+            lightbox.classList.remove('opacity-0', 'pointer-events-none');
+            lightbox.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+            lightbox.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Close Lightbox on background click or Escape key
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', renderGallery);
+    </script>
+</body>
+</html>
