@@ -68,7 +68,7 @@
             inset: 0;
             background: rgba(18, 18, 18, 0.95);
             display: flex;
-            flex-col: column;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #00F0FF;
@@ -329,44 +329,55 @@
             if (e.target.id === 'lightbox') closeLightbox();
         });
 
-        // --- Targeted PrintScreen / Screenshot Image Blurring ---
-        
+        // --- Robust Windows Snipping Tool & Screenshot Blurring ---
+
         function triggerImageBlur() {
-            // Add protection class to trigger blur on all image tags
             document.body.classList.add('screenshot-detected');
-            
-            // Clear clipboard if possible
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText('');
             }
-
-            // Restore images after 3.5 seconds
-            setTimeout(() => {
-                document.body.classList.remove('screenshot-detected');
-            }, 3500);
         }
 
-        // Listen for PrintScreen key and screenshot shortcuts
+        function restoreImageVisibility() {
+            setTimeout(() => {
+                document.body.classList.remove('screenshot-detected');
+            }, 1500);
+        }
+
+        // Listen for PrintScreen key
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.code === 'PrintScreen') {
                 triggerImageBlur();
+                restoreImageVisibility();
             }
         });
 
+        // Listen for shortcut combos (Win+Shift+S, Mac Cmd+Shift+3/4)
         document.addEventListener('keydown', (e) => {
-            // Windows Snipping Tool / Mac Screenshot Hotkeys (Win+Shift+S, Cmd+Shift+3, Cmd+Shift+4)
-            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 's' || e.key === 'S' || e.key === '3' || e.key === '4')) {
+            if (e.shiftKey && (e.key === 's' || e.key === 'S' || e.key === 'PrintScreen')) {
                 triggerImageBlur();
             }
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) {
+                triggerImageBlur();
+                restoreImageVisibility();
+            }
         });
 
-        // Also trigger blur when browser window loses focus (e.g. Snipping tool opening)
+        // Catch Windows Snipping Tool focus loss / background switch instantly
         window.addEventListener('blur', () => {
-            document.body.classList.add('screenshot-detected');
+            triggerImageBlur();
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                triggerImageBlur();
+            } else {
+                restoreImageVisibility();
+            }
         });
 
         window.addEventListener('focus', () => {
-            document.body.classList.remove('screenshot-detected');
+            restoreImageVisibility();
         });
 
         // Anti-save / Protection Event Listeners
